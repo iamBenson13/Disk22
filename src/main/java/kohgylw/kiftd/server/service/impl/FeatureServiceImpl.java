@@ -19,7 +19,6 @@ import java.util.*;
 @Service
 public class FeatureServiceImpl implements FeatureService {
 
-
     @Resource
     private FeatureMapper featureMapper;
     @Resource
@@ -37,10 +36,17 @@ public class FeatureServiceImpl implements FeatureService {
 
     //插入
     public String newFeature(final HttpServletRequest request) {
+        final String featureId = request.getParameter("featureId");
         final String featureName = request.getParameter("featureName");
        Feature f=new Feature();
         f.setFeatureId(UUID.randomUUID().toString());
         f.setFeatureName(featureName);
+        final List<Feature> feature = this.featureMapper.getFeatures();
+        for(Feature a : feature){
+            if(a.getFeatureName().equals(featureName)){
+                return "nameOccupied";
+            }
+        }
         int i = 0;
         while (true) {
             try {
